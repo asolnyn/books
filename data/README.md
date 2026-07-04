@@ -1,4 +1,4 @@
-# How the data files work 
+# How the data files work
 
 Your website reads book info from 4 files in this `data` folder instead of
 the HTML itself. Every book has a reference code (like "AP-01") that links
