@@ -1,0 +1,881 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#0c0c0e">
+<meta property="og:title" content="~ asol publication ~">
+<meta property="og:description" content="A catalog of published works">
+<title>~ asol publication ~</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Space+Grotesk:wght@400;500;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&family=Baloo+Da+2:wght@500;600;700;800&family=Hind+Siliguri:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<!--
+  ============================================================
+  HOW TO EDIT THIS SITE — read this first
+  ============================================================
+  Your book info now lives in separate files inside the "data" folder:
+    data/books.json         -> title, type/genre, price, WhatsApp number
+    data/dates.json         -> published / started / ended / edited
+    data/descriptions.json  -> short blurb, full description, pages,
+                                chapters, sold copies
+    data/covers.json        -> cover image paths
+  Full instructions are in data/README.md — open that file first.
+
+  Things you can edit directly in THIS file:
+    - CONTACT_PHONES     (search below)
+    - WHATSAPP_DEFAULT   (fallback WhatsApp number for Buy buttons)
+    - SOCIAL_LINKS        (footer social media links)
+  ============================================================
+-->
+
+<style>
+  :root {
+    --bg: #0c0c0e;
+    --ink: #f4f2ec;
+    --muted: #8b8b93;
+    --line: rgba(244,242,236,0.12);
+    --accent: #e6394a;
+    --accent-soft: rgba(230,57,74,0.12);
+    --overlay: rgba(0,0,0,0.72);
+
+    --font-bn-display: 'Baloo Da 2', sans-serif;
+    --font-bn-body: 'Hind Siliguri', sans-serif;
+    --font-en-display: 'Archivo Black', sans-serif;
+    --font-en-sub: 'Space Grotesk', sans-serif;
+    --font-en-body: 'Inter', sans-serif;
+    --font-mono: 'JetBrains Mono', monospace;
+  }
+
+  [data-theme="light"] {
+    --bg: #f6f4ee;
+    --ink: #141414;
+    --muted: #6b6b70;
+    --line: rgba(20,20,20,0.12);
+    --accent: #d62839;
+    --accent-soft: rgba(214,40,57,0.10);
+    --overlay: rgba(20,20,20,0.55);
+  }
+
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: var(--font-bn-body);
+    -webkit-font-smoothing: antialiased;
+    transition: background .2s ease, color .2s ease;
+  }
+  body.lang-en { font-family: var(--font-en-body); }
+
+  a { color: inherit; }
+  :focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+  button { font-family: inherit; }
+
+  .wrap {
+    max-width: 880px;
+    margin: 0 auto;
+    padding: 0 22px 80px;
+  }
+
+  header.masthead {
+    padding: 40px 0 20px;
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 16px;
+    border-bottom: 3px solid var(--ink);
+  }
+
+  .brand-name {
+    font-family: var(--font-bn-display);
+    font-weight: 800;
+    font-size: clamp(28px, 6.6vw, 48px);
+    line-height: 1;
+    letter-spacing: 0.5px;
+    text-transform: lowercase;
+  }
+  body.lang-en .brand-name { font-family: var(--font-en-display); font-weight: 400; letter-spacing: 0; }
+
+  .brand-sub {
+    margin-top: 8px;
+    font-family: var(--font-mono);
+    font-size: 12px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+
+  .header-controls {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 10px;
+    flex-shrink: 0;
+  }
+
+  .lang-toggle {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 10px;
+    border: 2px dashed var(--line);
+    border-radius: 10px;
+    transform: rotate(-3deg);
+    background: rgba(128,128,128,0.04);
+  }
+  .lang-toggle button {
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    padding: 6px 12px;
+    border-radius: 6px;
+    border: none;
+    background: transparent;
+    color: var(--muted);
+    cursor: pointer;
+    font-family: var(--font-mono);
+    transition: background .15s ease, color .15s ease;
+  }
+  .lang-toggle button.active { background: var(--accent); color: #fff; }
+
+  .theme-toggle {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    padding: 4px;
+    border-radius: 20px;
+    border: 1px solid var(--line);
+  }
+  .theme-toggle button {
+    font-size: 12px;
+    padding: 6px 12px;
+    border-radius: 16px;
+    border: none;
+    background: transparent;
+    color: var(--muted);
+    cursor: pointer;
+    font-family: var(--font-mono);
+  }
+  .theme-toggle button.active { background: var(--ink); color: var(--bg); }
+
+  .contact-bar {
+    padding: 16px 0 0;
+    font-family: var(--font-mono);
+    font-size: 13px;
+    color: var(--muted);
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px 10px;
+  }
+  .contact-bar strong { color: var(--ink); font-weight: 500; }
+
+  .toolbar {
+    margin-top: 40px;
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+  .search-box {
+    flex: 1 1 220px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 10px 14px;
+  }
+  .search-box input {
+    border: none;
+    background: transparent;
+    outline: none;
+    color: var(--ink);
+    font-family: var(--font-bn-body);
+    font-size: 14px;
+    width: 100%;
+  }
+  body.lang-en .search-box input { font-family: var(--font-en-body); }
+  .search-box svg { flex-shrink: 0; opacity: 0.5; }
+
+  .sort-select {
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: var(--font-mono);
+    font-size: 13px;
+    padding: 10px 12px;
+  }
+
+  .index-label {
+    margin: 30px 0 8px;
+    font-family: var(--font-mono);
+    font-size: 12px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--accent);
+  }
+
+  .empty-state {
+    padding: 40px 0;
+    color: var(--muted);
+    font-family: var(--font-mono);
+    font-size: 13px;
+    text-align: center;
+  }
+
+  .book {
+    position: relative;
+    padding: 34px 0;
+    border-top: 1px solid var(--line);
+    display: grid;
+    grid-template-columns: 74px 1fr;
+    gap: 4px 22px;
+  }
+  .book:last-child { border-bottom: 1px solid var(--line); }
+
+  .book-num-wrap { grid-row: 1 / span 4; padding-top: 4px; }
+  .book-num {
+    font-family: var(--font-en-display);
+    font-size: 44px;
+    line-height: 1;
+    color: transparent;
+    -webkit-text-stroke: 1.5px var(--line);
+    display: block;
+  }
+  .book-code {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    color: var(--muted);
+    margin-top: 6px;
+    letter-spacing: 1px;
+  }
+
+  .book-title-row { cursor: pointer; }
+  .book-type {
+    display: inline-block;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: var(--accent);
+    background: var(--accent-soft);
+    padding: 3px 10px;
+    border-radius: 20px;
+    margin-bottom: 8px;
+  }
+  .book-title {
+    font-family: var(--font-bn-display);
+    font-weight: 700;
+    font-size: clamp(21px, 4.2vw, 28px);
+    line-height: 1.15;
+    transition: color .12s ease;
+  }
+  body.lang-en .book-title { font-family: var(--font-en-sub); font-weight: 700; }
+  .book-title-row:hover .book-title { color: var(--accent); }
+
+  .meta-row {
+    margin-top: 12px;
+    display: flex;
+    gap: 24px;
+    flex-wrap: wrap;
+  }
+  .meta-item {
+    font-family: var(--font-mono);
+    font-size: 12.5px;
+    color: var(--muted);
+  }
+  .meta-item b { color: var(--ink); font-weight: 500; }
+
+  .book-body {
+    margin-top: 16px;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+  .book.has-cover .book-body { grid-template-columns: 110px 1fr; }
+
+  .cover {
+    width: 100%;
+    aspect-ratio: 3 / 4;
+    border-radius: 8px;
+    overflow: hidden;
+    border: 1px solid var(--line);
+    cursor: pointer;
+  }
+  .cover img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .cover.placeholder {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--accent-soft);
+    color: var(--accent);
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 1px;
+    text-align: center;
+    text-transform: uppercase;
+    padding: 6px;
+  }
+
+  .book-desc {
+    font-size: 15px;
+    line-height: 1.7;
+    color: var(--ink);
+    opacity: 0.85;
+    max-width: 60ch;
+  }
+
+  .book-footer {
+    margin-top: 16px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+
+  .price { font-family: var(--font-mono); font-size: 14px; font-weight: 700; }
+  .price .unit { color: var(--muted); font-weight: 400; margin-left: 4px; }
+
+  .buy-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    text-decoration: none;
+    background: var(--accent);
+    color: #fff;
+    font-family: var(--font-mono);
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    padding: 10px 18px;
+    border-radius: 6px;
+    transition: transform .12s ease, filter .15s ease;
+  }
+  .buy-btn:hover { filter: brightness(1.1); transform: translateY(-1px); }
+
+  .status-pill {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: var(--muted);
+    border: 1px solid var(--line);
+    padding: 8px 14px;
+    border-radius: 20px;
+  }
+
+  .read-more {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--accent);
+    text-decoration: underline;
+    cursor: pointer;
+    background: none;
+    border: none;
+    padding: 0;
+    margin-top: 8px;
+    display: inline-block;
+  }
+
+  .modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: var(--overlay);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    z-index: 50;
+  }
+  .modal-overlay.open { display: flex; }
+
+  .modal {
+    background: var(--bg);
+    border: 1px solid var(--line);
+    border-radius: 16px;
+    max-width: 560px;
+    width: 100%;
+    max-height: 86vh;
+    overflow-y: auto;
+    padding: 30px;
+    position: relative;
+  }
+
+  .modal-close {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    background: var(--accent-soft);
+    color: var(--accent);
+    border: none;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    font-size: 16px;
+    cursor: pointer;
+  }
+
+  .modal-cover {
+    width: 100px;
+    aspect-ratio: 3/4;
+    border-radius: 8px;
+    overflow: hidden;
+    border: 1px solid var(--line);
+    margin-bottom: 16px;
+  }
+  .modal-cover img { width: 100%; height: 100%; object-fit: cover; }
+
+  .modal-title {
+    font-family: var(--font-bn-display);
+    font-weight: 700;
+    font-size: 26px;
+  }
+  body.lang-en .modal-title { font-family: var(--font-en-sub); }
+
+  .modal-stats {
+    margin-top: 16px;
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+  }
+  .modal-stat {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--muted);
+  }
+  .modal-stat b { display: block; color: var(--ink); font-size: 16px; font-weight: 700; }
+
+  .modal-desc {
+    margin-top: 20px;
+    font-size: 15px;
+    line-height: 1.75;
+  }
+
+  .modal-nav {
+    margin-top: 26px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-top: 1px solid var(--line);
+    padding-top: 18px;
+  }
+  .nav-btn {
+    background: none;
+    border: 1px solid var(--line);
+    color: var(--ink);
+    font-family: var(--font-mono);
+    font-size: 12px;
+    padding: 8px 14px;
+    border-radius: 8px;
+    cursor: pointer;
+  }
+  .nav-btn:disabled { opacity: 0.3; cursor: default; }
+
+  footer {
+    margin-top: 70px;
+    padding-top: 24px;
+    border-top: 1px solid var(--line);
+  }
+  .social-row {
+    display: flex;
+    gap: 18px;
+    flex-wrap: wrap;
+    margin-bottom: 16px;
+  }
+  .social-row a {
+    font-family: var(--font-mono);
+    font-size: 13px;
+    text-decoration: none;
+    color: var(--ink);
+    border: 1px solid var(--line);
+    padding: 8px 14px;
+    border-radius: 20px;
+    transition: background .15s ease, color .15s ease;
+  }
+  .social-row a:hover { background: var(--accent); color: #fff; border-color: var(--accent); }
+
+  .footer-bottom {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 10px;
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--muted);
+  }
+
+  @media (max-width: 480px) {
+    .book { grid-template-columns: 40px 1fr; }
+    .book-num { font-size: 26px; }
+    .book.has-cover .book-body { grid-template-columns: 80px 1fr; }
+    .header-controls { align-items: flex-start; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+    .buy-btn { transition: none; }
+  }
+</style>
+</head>
+<body class="lang-bn" data-theme="dark">
+
+<div class="wrap">
+
+  <header class="masthead">
+    <div>
+      <div class="brand-name" data-bn="~ আসল প্রকাশনী ~" data-en="~ Asol Publication ~">~ আসল প্রকাশনী ~</div>
+      <div class="brand-sub" data-bn="লেখকের প্রকাশিত কাজের তালিকা" data-en="A catalog of published works">লেখকের প্রকাশিত কাজের তালিকা</div>
+    </div>
+    <div class="header-controls">
+      <div class="lang-toggle" role="group" aria-label="Language toggle">
+        <button type="button" id="btn-bn" class="active">বাং</button>
+        <button type="button" id="btn-en">EN</button>
+      </div>
+      <div class="theme-toggle" role="group" aria-label="Theme toggle">
+        <button type="button" id="btn-dark" class="active">Dark</button>
+        <button type="button" id="btn-light">Light</button>
+      </div>
+    </div>
+  </header>
+
+  <div class="contact-bar">
+    <span data-bn="যোগাযোগ:" data-en="Contact:">যোগাযোগ:</span>
+    <strong id="contact-phone"></strong>
+  </div>
+
+  <div class="toolbar">
+    <div class="search-box">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input type="text" id="search-input" data-bn-ph="বইয়ের নাম খুঁজুন..." data-en-ph="Search books..." placeholder="বইয়ের নাম খুঁজুন...">
+    </div>
+    <select class="sort-select" id="sort-select">
+      <option value="order" data-bn="লেখকের দেওয়া ক্রম" data-en="Author's order">লেখকের দেওয়া ক্রম</option>
+      <option value="alpha" data-bn="বর্ণানুক্রমিক (A-Z)" data-en="Alphabetical (A-Z)">বর্ণানুক্রমিক (A-Z)</option>
+      <option value="date" data-bn="প্রকাশের তারিখ" data-en="Publish date">প্রকাশের তারিখ</option>
+    </select>
+  </div>
+
+  <div class="index-label" data-bn="লেখনসমূহ" data-en="Writings">লেখনসমূহ</div>
+
+  <div id="book-list"></div>
+
+  <footer>
+    <div class="social-row" id="social-row"></div>
+    <div class="footer-bottom">
+      <span data-bn="~ আসল প্রকাশনী ~" data-en="~ Asol Publication ~">~ আসল প্রকাশনী ~</span>
+      <span id="footer-contact"></span>
+    </div>
+  </footer>
+
+</div>
+
+<div class="modal-overlay" id="modal-overlay">
+  <div class="modal">
+    <button class="modal-close" id="modal-close">✕</button>
+    <div id="modal-cover-wrap"></div>
+    <div class="book-type" id="modal-type"></div>
+    <div class="modal-title" id="modal-title"></div>
+    <div class="modal-stats" id="modal-stats"></div>
+    <div class="modal-desc" id="modal-desc"></div>
+    <div class="modal-nav">
+      <button class="nav-btn" id="modal-prev">← <span data-bn="আগের" data-en="Previous">আগের</span></button>
+      <button class="nav-btn" id="modal-next"><span data-bn="পরের" data-en="Next">পরের</span> →</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  // ============================================================
+  // EDIT THESE
+  // ============================================================
+
+  const CONTACT_PHONES = [
+    "+88096 7873 6861"
+  ];
+
+  const WHATSAPP_DEFAULT = "8809678736861";
+
+  const SOCIAL_LINKS = [
+    { label: "Telegram", url: "https://t.me/nyn33user" },
+    { label: "Facebook", url: "" },
+    { label: "YouTube", url: "" }
+  ];
+
+  // ============================================================
+  // App logic — no need to edit below this line
+  // ============================================================
+
+  let BOOKS = [];
+  let lang = 'bn';
+  let sortMode = 'order';
+  let searchQuery = '';
+  let modalIndex = null;
+  let visibleList = [];
+
+  const bnDigits = ['০','১','২','৩','৪','৫','৬','৭','৮','৯'];
+  function toBnDigits(str) { return String(str).replace(/[0-9]/g, d => bnDigits[d]); }
+
+  function parseDMY(str) {
+    if (!str) return null;
+    const [d, m, y] = str.split('-').map(Number);
+    if (!d || !m || !y) return null;
+    return new Date(y, m - 1, d).getTime();
+  }
+
+  async function loadData() {
+    const [books, dates, descriptions, covers] = await Promise.all([
+      fetch('data/books.json').then(r => r.json()),
+      fetch('data/dates.json').then(r => r.json()),
+      fetch('data/descriptions.json').then(r => r.json()),
+      fetch('data/covers.json').then(r => r.json())
+    ]);
+
+    BOOKS = books.map(b => ({
+      ...b,
+      dates: dates[b.id] || {},
+      desc: descriptions[b.id] || { short: {bn:'',en:''}, full: {bn:'',en:''}, pages: 0, chapters: 0, sold: 0 },
+      cover: covers[b.id] || ""
+    }));
+
+    renderAll();
+  }
+
+  function getFiltered() {
+    let list = [...BOOKS];
+
+    if (searchQuery.trim()) {
+      const q = searchQuery.trim().toLowerCase();
+      list = list.filter(b =>
+        b.title.bn.toLowerCase().includes(q) || b.title.en.toLowerCase().includes(q)
+      );
+    }
+
+    if (sortMode === 'alpha') {
+      list.sort((a, b) => a.title[lang].localeCompare(b.title[lang], lang === 'bn' ? 'bn' : 'en'));
+    } else if (sortMode === 'date') {
+      list.sort((a, b) => {
+        const da = parseDMY(a.dates.published);
+        const db = parseDMY(b.dates.published);
+        if (da === null && db === null) return 0;
+        if (da === null) return 1;
+        if (db === null) return -1;
+        return db - da;
+      });
+    } else {
+      list.sort((a, b) => (a.order || 0) - (b.order || 0));
+    }
+
+    return list;
+  }
+
+  function fmtDate(dateStr) {
+    if (!dateStr) return null;
+    return lang === 'bn' ? toBnDigits(dateStr) : dateStr;
+  }
+
+  function buildWhatsappLink(book) {
+    const number = (book.whatsapp && book.whatsapp.trim()) || WHATSAPP_DEFAULT;
+    const msg = encodeURIComponent(
+      (lang === 'bn' ? 'আমি "' : 'I want to order "') + book.title[lang] + (lang === 'bn' ? '" বইটি কিনতে চাই।' : '".')
+    );
+    return `https://wa.me/${number}?text=${msg}`;
+  }
+
+  function renderList() {
+    visibleList = getFiltered();
+    const container = document.getElementById('book-list');
+    container.innerHTML = '';
+
+    if (visibleList.length === 0) {
+      container.innerHTML = `<div class="empty-state">${lang === 'bn' ? 'কোনো বই পাওয়া যায়নি' : 'No books found'}</div>`;
+      return;
+    }
+
+    visibleList.forEach((book, i) => {
+      const num = String(i + 1).padStart(2, '0');
+      const hasCover = !!book.cover;
+
+      const pub = fmtDate(book.dates.published);
+      const st = fmtDate(book.dates.started);
+      const en = fmtDate(book.dates.ended);
+      const ed = fmtDate(book.dates.edited);
+      const sold = lang === 'bn' ? toBnDigits(book.desc.sold) : book.desc.sold;
+
+      const metaRows = [];
+      if (st || en) {
+        metaRows.push(`<div class="meta-row">
+          ${st ? `<span class="meta-item">${lang==='bn'?'শুরু':'Started'}: <b>${st}</b></span>` : ''}
+          ${en ? `<span class="meta-item">${lang==='bn'?'শেষ':'Ended'}: <b>${en}</b></span>` : ''}
+        </div>`);
+      }
+      if (ed) metaRows.push(`<div class="meta-row"><span class="meta-item">${lang==='bn'?'সম্পাদনা':'Edited'}: <b>${ed}</b></span></div>`);
+      if (pub) metaRows.push(`<div class="meta-row"><span class="meta-item">${lang==='bn'?'প্রকাশ':'Published'}: <b>${pub}</b></span></div>`);
+      metaRows.push(`<div class="meta-row"><span class="meta-item">${lang==='bn'?'বিক্রি হয়েছে':'Sold copies'}: <b>${sold}</b></span></div>`);
+
+      const coverHtml = hasCover
+        ? `<div class="cover" data-open="${book.id}"><img src="${book.cover}" alt="${book.title[lang]}"></div>`
+        : `<div class="cover placeholder">${lang === 'bn' ? 'কভার শীঘ্রই' : 'Cover coming soon'}</div>`;
+
+      const priceHtml = book.price > 0
+        ? `<div class="price">${lang === 'bn' ? toBnDigits(book.price) : book.price}<span class="unit">${lang === 'bn' ? ' টাকা' : ' BDT'}</span></div>`
+        : '';
+
+      const actionHtml = book.price > 0
+        ? `<a class="buy-btn" href="${buildWhatsappLink(book)}" target="_blank" rel="noopener">${lang === 'bn' ? 'কিনুন' : 'Buy now'} →</a>`
+        : `<span class="status-pill">${lang === 'bn' ? 'শীঘ্রই আসছে' : 'Coming soon'}</span>`;
+
+      const el = document.createElement('div');
+      el.className = 'book' + (hasCover ? ' has-cover' : '');
+      el.innerHTML = `
+        <div class="book-num-wrap">
+          <span class="book-num">${num}</span>
+          <div class="book-code">${book.id}</div>
+        </div>
+        <div>
+          <div class="book-title-row" data-open="${book.id}">
+            <div class="book-type">${book.type[lang]}</div>
+            <div class="book-title">${book.title[lang]}</div>
+          </div>
+          ${metaRows.join('')}
+        </div>
+        <div class="book-body" style="grid-column: 2;">
+          ${hasCover ? coverHtml : ''}
+          <div>
+            <p class="book-desc">${book.desc.short[lang]}</p>
+            <button class="read-more" data-open="${book.id}">${lang==='bn'?'পুরোটা পড়ুন →':'Read more →'}</button>
+            <div class="book-footer">
+              ${priceHtml}
+              ${actionHtml}
+            </div>
+          </div>
+        </div>
+      `;
+      container.appendChild(el);
+    });
+
+    container.querySelectorAll('[data-open]').forEach(node => {
+      node.addEventListener('click', () => openModal(node.dataset.open));
+    });
+  }
+
+  function openModal(id) {
+    modalIndex = visibleList.findIndex(b => b.id === id);
+    renderModal();
+    document.getElementById('modal-overlay').classList.add('open');
+  }
+
+  function closeModal() {
+    document.getElementById('modal-overlay').classList.remove('open');
+    modalIndex = null;
+  }
+
+  function renderModal() {
+    if (modalIndex === null || !visibleList[modalIndex]) return;
+    const book = visibleList[modalIndex];
+
+    document.getElementById('modal-type').textContent = book.type[lang];
+    document.getElementById('modal-title').textContent = book.title[lang];
+    document.getElementById('modal-desc').textContent = book.desc.full[lang];
+
+    const coverWrap = document.getElementById('modal-cover-wrap');
+    coverWrap.innerHTML = book.cover
+      ? `<div class="modal-cover"><img src="${book.cover}" alt="${book.title[lang]}"></div>`
+      : '';
+
+    const stats = [];
+    if (book.desc.pages > 0) stats.push({ label: lang==='bn'?'পৃষ্ঠা':'Pages', value: lang==='bn'?toBnDigits(book.desc.pages):book.desc.pages });
+    if (book.desc.chapters > 0) stats.push({ label: lang==='bn'?'অধ্যায়':'Chapters', value: lang==='bn'?toBnDigits(book.desc.chapters):book.desc.chapters });
+    stats.push({ label: lang==='bn'?'বিক্রি হয়েছে':'Sold', value: lang==='bn'?toBnDigits(book.desc.sold):book.desc.sold });
+    if (book.dates.published) stats.push({ label: lang==='bn'?'প্রকাশ':'Published', value: fmtDate(book.dates.published) });
+
+    document.getElementById('modal-stats').innerHTML = stats.map(s =>
+      `<div class="modal-stat">${s.label}<b>${s.value}</b></div>`
+    ).join('');
+
+    document.getElementById('modal-prev').disabled = modalIndex <= 0;
+    document.getElementById('modal-next').disabled = modalIndex >= visibleList.length - 1;
+  }
+
+  document.getElementById('modal-close').addEventListener('click', closeModal);
+  document.getElementById('modal-overlay').addEventListener('click', e => {
+    if (e.target.id === 'modal-overlay') closeModal();
+  });
+  document.getElementById('modal-prev').addEventListener('click', () => { if (modalIndex > 0) { modalIndex--; renderModal(); } });
+  document.getElementById('modal-next').addEventListener('click', () => { if (modalIndex < visibleList.length - 1) { modalIndex++; renderModal(); } });
+  document.addEventListener('keydown', e => {
+    if (!document.getElementById('modal-overlay').classList.contains('open')) return;
+    if (e.key === 'Escape') closeModal();
+    if (e.key === 'ArrowLeft' && modalIndex > 0) { modalIndex--; renderModal(); }
+    if (e.key === 'ArrowRight' && modalIndex < visibleList.length - 1) { modalIndex++; renderModal(); }
+  });
+
+  function renderSocial() {
+    const row = document.getElementById('social-row');
+    row.innerHTML = SOCIAL_LINKS.filter(s => s.url).map(s =>
+      `<a href="${s.url}" target="_blank" rel="noopener">${s.label}</a>`
+    ).join('');
+  }
+
+  function renderAll() {
+    document.querySelectorAll('[data-bn]').forEach(node => {
+      node.textContent = node.dataset[lang];
+    });
+
+    const searchInput = document.getElementById('search-input');
+    searchInput.placeholder = searchInput.dataset[lang + 'Ph'];
+
+    const phonesText = CONTACT_PHONES.join('  ·  ');
+    document.getElementById('contact-phone').textContent = phonesText;
+    document.getElementById('footer-contact').textContent = phonesText;
+
+    renderList();
+    if (modalIndex !== null) renderModal();
+  }
+
+  document.getElementById('btn-bn').addEventListener('click', () => {
+    lang = 'bn';
+    document.body.className = 'lang-bn';
+    document.documentElement.lang = 'bn';
+    document.getElementById('btn-bn').classList.add('active');
+    document.getElementById('btn-en').classList.remove('active');
+    renderAll();
+  });
+  document.getElementById('btn-en').addEventListener('click', () => {
+    lang = 'en';
+    document.body.className = 'lang-en';
+    document.documentElement.lang = 'en';
+    document.getElementById('btn-en').classList.add('active');
+    document.getElementById('btn-bn').classList.remove('active');
+    renderAll();
+  });
+
+  document.getElementById('btn-dark').addEventListener('click', () => {
+    document.body.setAttribute('data-theme', 'dark');
+    document.getElementById('btn-dark').classList.add('active');
+    document.getElementById('btn-light').classList.remove('active');
+  });
+  document.getElementById('btn-light').addEventListener('click', () => {
+    document.body.setAttribute('data-theme', 'light');
+    document.getElementById('btn-light').classList.add('active');
+    document.getElementById('btn-dark').classList.remove('active');
+  });
+
+  document.getElementById('search-input').addEventListener('input', e => {
+    searchQuery = e.target.value;
+    renderList();
+  });
+
+  document.getElementById('sort-select').addEventListener('change', e => {
+    sortMode = e.target.value;
+    renderList();
+  });
+
+  renderSocial();
+  loadData();
+</script>
+</body>
+</html>
