@@ -1,0 +1,41 @@
+{
+  "AP-01": {
+    "short": {
+      "bn": "এ গল্পো সম্পর্কে আর কিছু না বলি। যা বলেছি তাই অনেক বেশি।",
+      "en": "I won't say much more about this story — what's already been said is more than enough."
+    },
+    "full": {
+      "bn": "এ গল্পো সম্পর্কে আর কিছু না বলি। যা বলেছি তাই অনেক বেশি। (এখানে বইয়ের বিস্তারিত বর্ণনা লিখুন)",
+      "en": "I won't say much more about this story — what's already been said is more than enough. (Write the full detailed description here.)"
+    },
+    "pages": 0,
+    "chapters": 0,
+    "sold": 1
+  },
+  "AP-02": {
+    "short": {
+      "bn": "এ গল্পো সম্পর্কে আর কিছু না বলি। যা বলেছি তাই অনেক বেশি।",
+      "en": "I won't say much more about this story — what's already been said is more than enough."
+    },
+    "full": {
+      "bn": "এ গল্পো সম্পর্কে আর কিছু না বলি। যা বলেছি তাই অনেক বেশি। (এখানে বইয়ের বিস্তারিত বর্ণনা লিখুন)",
+      "en": "I won't say much more about this story — what's already been said is more than enough. (Write the full detailed description here.)"
+    },
+    "pages": 0,
+    "chapters": 0,
+    "sold": 0
+  },
+  "AP-03": {
+    "short": {
+      "bn": "এ গল্পো সম্পর্কে আর কিছু না বলি। যা বলেছি তাই অনেক বেশি।",
+      "en": "I won't say much more about this story — what's already been said is more than enough."
+    },
+    "full": {
+      "bn": "এ গল্পো সম্পর্কে আর কিছু না বলি। যা বলেছি তাই অনেক বেশি। (এখানে বইয়ের বিস্তারিত বর্ণনা লিখুন)",
+      "en": "I won't say much more about this story — what's already been said is more than enough. (Write the full detailed description here.)"
+    },
+    "pages": 0,
+    "chapters": 0,
+    "sold": 0
+  }
+}
