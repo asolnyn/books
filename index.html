@@ -277,7 +277,7 @@
     font-size: 44px;
     line-height: 1;
     color: transparent;
-    -webkit-text-stroke: 1.5px var(--line);
+    -webkit-text-stroke: 2px var(--muted);
     display: block;
   }
   .book-code {
@@ -766,12 +766,34 @@
     }
 
     const results = await Promise.allSettled(
-      manifest.map(id =>
-        fetch(`data/books/${id}.json`).then(r => {
+      manifest.map(async id => {
+        const book = await fetch(`data/books/${id}.json`).then(r => {
           if (!r.ok) throw new Error(`data/books/${id}.json not found`);
           return r.json();
-        })
-      )
+        });
+
+        // Optional: excerpt text loaded from a separate .txt file instead
+        // of being written inline in the JSON — better for long text.
+        if (book.excerptFile) {
+          book._excerptText = {};
+          for (const l of ['bn', 'en']) {
+            const path = book.excerptFile[l];
+            if (!path) continue;
+            try {
+              const text = await fetch(path).then(r => {
+                if (!r.ok) throw new Error(`${path} not found`);
+                return r.text();
+              });
+              book._excerptText[l] = text;
+            } catch (e) {
+              console.error(`Could not load excerpt file for "${id}" (${l}):`, e);
+              book._excerptText[l] = '';
+            }
+          }
+        }
+
+        return book;
+      })
     );
 
     BOOKS = [];
@@ -779,6 +801,12 @@
       if (res.status === 'fulfilled') {
         const b = res.value;
         const d = b.description || {};
+        const excerpt = b._excerptText
+          ? {
+              bn: b._excerptText.bn || (d.excerpt && d.excerpt.bn) || '',
+              en: b._excerptText.en || (d.excerpt && d.excerpt.en) || ''
+            }
+          : (d.excerpt || { bn: '', en: '' });
         BOOKS.push({
           id: b.id || manifest[idx],
           order: b.order || 0,
@@ -791,7 +819,7 @@
           desc: {
             short: d.short || { bn: '', en: '' },
             full: d.full || { bn: '', en: '' },
-            excerpt: d.excerpt || { bn: '', en: '' },
+            excerpt: excerpt,
             pages: d.pages || 0,
             chapters: d.chapters || 0,
             sold: d.sold || 0,
