@@ -1,0 +1,33 @@
+{
+  "id": "AP-01",
+  "order": 1,
+  "title": { "bn": "বছর দুই হাজার আঠারো", "en": "Bochor Dui Hajar Atharo" },
+  "type": { "bn": "গল্প", "en": "Story" },
+  "price": 349,
+  "whatsapp": "",
+  "cover": "covers/AP-01.jpg",
+  "dates": {
+    "published": "01-07-2025",
+    "started": "04-02-2020",
+    "ended": "22-06-2024",
+    "edited": "27-06-2025"
+  },
+  "description": {
+    "short": {
+      "bn": "এ গল্পো সম্পর্কে আর কিছু না বলি। যা বলেছি তাই অনেক বেশি।",
+      "en": "I won't say much more about this story — what's already been said is more than enough."
+    },
+    "full": {
+      "bn": "এ গল্পো সম্পর্কে আর কিছু না বলি। যা বলেছি তাই অনেক বেশি। (এখানে বইয়ের বিস্তারিত বর্ণনা লিখুন)",
+      "en": "I won't say much more about this story — what's already been said is more than enough. (Write the full detailed description here.)"
+    },
+    "excerpt": {
+      "bn": "(এখানে বইয়ের প্রথম অংশ থেকে কিছুটা লিখুন, যা পাঠক কিনার আগে পড়তে পারবে।)",
+      "en": "(Paste the first part of the book here — enough for a reader to sample before buying.)"
+    },
+    "pages": 0,
+    "chapters": 0,
+    "sold": 1,
+    "continuous": false
+  }
+}
