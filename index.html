@@ -293,30 +293,32 @@
   body.lang-en .book-title { font-family: var(--font-en-sub); font-weight: 700; }
   .book-title-row:hover .book-title { color: var(--accent); }
 
-  .meta-row {
-    margin-top: 12px;
+  .meta-col {
+    margin-top: 16px;
     display: flex;
-    gap: 24px;
-    flex-wrap: wrap;
+    flex-direction: column;
+    gap: 14px;
+    justify-content: center;
   }
   .meta-item {
     font-family: var(--font-mono);
-    font-size: 12.5px;
+    font-size: 13px;
     color: var(--muted);
   }
   body.lang-bn .meta-item { font-family: var(--font-bn-body); }
   .meta-item b { color: var(--ink); font-weight: 500; }
 
-  .book-body {
+  .book-top-row {
     margin-top: 16px;
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: 16px;
+    display: flex;
+    gap: 24px;
+    align-items: flex-start;
   }
-  .book.has-cover .book-body { grid-template-columns: 170px 1fr; align-items: start; }
+  .book-top-row .meta-col { margin-top: 0; flex: 1; }
 
   .cover {
-    width: 100%;
+    width: 150px;
+    flex-shrink: 0;
     aspect-ratio: 3 / 4;
     border-radius: 10px;
     overflow: hidden;
@@ -539,7 +541,7 @@
   @media (max-width: 480px) {
     .book { grid-template-columns: 40px 1fr; }
     .book-num { font-size: 26px; }
-    .book.has-cover .book-body { grid-template-columns: 130px 1fr; }
+    .cover { width: 110px; }
     .header-controls { align-items: flex-start; }
   }
 
@@ -733,16 +735,12 @@
       const ed = fmtDate(book.dates.edited);
       const sold = lang === 'bn' ? toBnDigits(book.desc.sold) : book.desc.sold;
 
-      const metaRows = [];
-      if (st || en) {
-        metaRows.push(`<div class="meta-row">
-          ${st ? `<span class="meta-item">${lang==='bn'?'শুরু':'Started'}: <b>${st}</b></span>` : ''}
-          ${en ? `<span class="meta-item">${lang==='bn'?'শেষ':'Ended'}: <b>${en}</b></span>` : ''}
-        </div>`);
-      }
-      if (ed) metaRows.push(`<div class="meta-row"><span class="meta-item">${lang==='bn'?'সম্পাদনা':'Edited'}: <b>${ed}</b></span></div>`);
-      if (pub) metaRows.push(`<div class="meta-row"><span class="meta-item">${lang==='bn'?'প্রকাশ':'Published'}: <b>${pub}</b></span></div>`);
-      metaRows.push(`<div class="meta-row"><span class="meta-item">${lang==='bn'?'বিক্রি হয়েছে':'Sold copies'}: <b>${sold}</b></span></div>`);
+      const metaLines = [];
+      if (st) metaLines.push(`<div class="meta-item">${lang==='bn'?'শুরু':'Started'}: <b>${st}</b></div>`);
+      if (en) metaLines.push(`<div class="meta-item">${lang==='bn'?'শেষ':'Ended'}: <b>${en}</b></div>`);
+      if (ed) metaLines.push(`<div class="meta-item">${lang==='bn'?'সম্পাদনা':'Edited'}: <b>${ed}</b></div>`);
+      if (pub) metaLines.push(`<div class="meta-item">${lang==='bn'?'প্রকাশ':'Published'}: <b>${pub}</b></div>`);
+      metaLines.push(`<div class="meta-item">${lang==='bn'?'বিক্রি হয়েছে':'Sold copies'}: <b>${sold}</b></div>`);
 
       const coverHtml = hasCover
         ? `<div class="cover" data-open="${book.id}"><img src="${book.cover}" alt="${book.title[lang]}"></div>`
@@ -763,22 +761,20 @@
           <span class="book-num">${num}</span>
           <div class="book-code">${book.id}</div>
         </div>
-        <div>
+        <div style="grid-column: 2;">
           <div class="book-title-row" data-open="${book.id}">
             <div class="book-type">${book.type[lang]}</div>
             <div class="book-title">${book.title[lang]}</div>
           </div>
-          ${metaRows.join('')}
-        </div>
-        <div class="book-body" style="grid-column: 2;">
-          ${hasCover ? coverHtml : ''}
-          <div>
-            <p class="book-desc">${book.desc.short[lang]}</p>
-            <button class="read-more" data-open="${book.id}">${lang==='bn'?'পুরোটা পড়ুন →':'Read more →'}</button>
-            <div class="book-footer">
-              ${priceHtml}
-              ${actionHtml}
-            </div>
+          <div class="book-top-row">
+            ${coverHtml}
+            <div class="meta-col">${metaLines.join('')}</div>
+          </div>
+          <p class="book-desc" style="margin-top:16px;">${book.desc.short[lang]}</p>
+          <button class="read-more" data-open="${book.id}">${lang==='bn'?'পুরোটা পড়ুন →':'Read more →'}</button>
+          <div class="book-footer">
+            ${priceHtml}
+            ${actionHtml}
           </div>
         </div>
       `;
