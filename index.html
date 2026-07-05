@@ -44,7 +44,7 @@
     --overlay: rgba(0,0,0,0.72);
 
     --font-bn-display: 'Jashir Abhyuday', sans-serif;
-    --font-bn-body: 'Jashir Abhyuday', sans-serif;    
+    --font-bn-body: 'Jashir Abhyuday', sans-serif;
     --font-en-display: 'Archivo Black', sans-serif;
     --font-en-sub: 'Space Grotesk', sans-serif;
     --font-en-body: 'Inter', sans-serif;
@@ -109,6 +109,18 @@
     letter-spacing: 2px;
     text-transform: uppercase;
     color: var(--muted);
+  }
+
+  /* Bangla text should never use the mono font's letter-spacing/uppercase —
+     Bangla script breaks apart visually when spaced out like English caps do. */
+  body.lang-bn .brand-sub,
+  body.lang-bn .index-label,
+  body.lang-bn .sort-select,
+  body.lang-bn .book-code,
+  body.lang-bn option {
+    font-family: var(--font-bn-body);
+    letter-spacing: 0;
+    text-transform: none;
   }
 
   .header-controls {
@@ -270,6 +282,7 @@
     border-radius: 20px;
     margin-bottom: 8px;
   }
+  body.lang-bn .book-type { font-family: var(--font-bn-body); letter-spacing: 0; text-transform: none; }
   .book-title {
     font-family: var(--font-bn-display);
     font-weight: 700;
@@ -291,6 +304,7 @@
     font-size: 12.5px;
     color: var(--muted);
   }
+  body.lang-bn .meta-item { font-family: var(--font-bn-body); }
   .meta-item b { color: var(--ink); font-weight: 500; }
 
   .book-body {
@@ -323,6 +337,7 @@
     text-transform: uppercase;
     padding: 6px;
   }
+  body.lang-bn .cover.placeholder { font-family: var(--font-bn-body); letter-spacing: 0; text-transform: none; }
 
   .book-desc {
     font-size: 15px;
@@ -342,6 +357,7 @@
 
   .price { font-family: var(--font-mono); font-size: 14px; font-weight: 700; }
   .price .unit { color: var(--muted); font-weight: 400; margin-left: 4px; }
+  body.lang-bn .price { font-family: var(--font-bn-body); }
 
   .buy-btn {
     display: inline-flex;
@@ -359,6 +375,7 @@
     border-radius: 6px;
     transition: transform .12s ease, filter .15s ease;
   }
+  body.lang-bn .buy-btn { font-family: var(--font-bn-body); letter-spacing: 0; text-transform: none; }
   .buy-btn:hover { filter: brightness(1.1); transform: translateY(-1px); }
 
   .status-pill {
@@ -371,6 +388,7 @@
     padding: 8px 14px;
     border-radius: 20px;
   }
+  body.lang-bn .status-pill { font-family: var(--font-bn-body); letter-spacing: 0; text-transform: none; }
 
   .read-more {
     font-family: var(--font-mono);
@@ -384,6 +402,7 @@
     margin-top: 8px;
     display: inline-block;
   }
+  body.lang-bn .read-more { font-family: var(--font-bn-body); }
 
   .modal-overlay {
     position: fixed;
@@ -451,6 +470,7 @@
     font-size: 12px;
     color: var(--muted);
   }
+  body.lang-bn .modal-stat { font-family: var(--font-bn-body); }
   .modal-stat b { display: block; color: var(--ink); font-size: 16px; font-weight: 700; }
 
   .modal-desc {
@@ -477,6 +497,7 @@
     border-radius: 8px;
     cursor: pointer;
   }
+  body.lang-bn .nav-btn { font-family: var(--font-bn-body); }
   .nav-btn:disabled { opacity: 0.3; cursor: default; }
 
   footer {
@@ -511,6 +532,7 @@
     font-size: 12px;
     color: var(--muted);
   }
+  body.lang-bn .footer-bottom { font-family: var(--font-bn-body); }
 
   @media (max-width: 480px) {
     .book { grid-template-columns: 40px 1fr; }
