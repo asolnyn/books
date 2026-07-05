@@ -32,7 +32,7 @@
 <style>
   @font-face {
   font-family: 'Jashir Abhyuday';
-  src: url('fonts/Li%20Jashir%20Abhyuday%20Unicode.ttf') format('truetype');
+  src: url('fonts/Li_Jashir_Abhyuday_Unicode.ttf') format('truetype');
   }
   :root {
     --bg: #0c0c0e;
@@ -313,14 +313,15 @@
     grid-template-columns: 1fr;
     gap: 16px;
   }
-  .book.has-cover .book-body { grid-template-columns: 110px 1fr; }
+  .book.has-cover .book-body { grid-template-columns: 170px 1fr; align-items: start; }
 
   .cover {
     width: 100%;
     aspect-ratio: 3 / 4;
-    border-radius: 8px;
+    border-radius: 10px;
     overflow: hidden;
     border: 1px solid var(--line);
+    box-shadow: 0 10px 24px rgba(0,0,0,0.28);
     cursor: pointer;
   }
   .cover img { width: 100%; height: 100%; object-fit: cover; display: block; }
@@ -443,11 +444,12 @@
   }
 
   .modal-cover {
-    width: 100px;
+    width: 150px;
     aspect-ratio: 3/4;
-    border-radius: 8px;
+    border-radius: 10px;
     overflow: hidden;
     border: 1px solid var(--line);
+    box-shadow: 0 10px 24px rgba(0,0,0,0.28);
     margin-bottom: 16px;
   }
   .modal-cover img { width: 100%; height: 100%; object-fit: cover; }
@@ -537,7 +539,7 @@
   @media (max-width: 480px) {
     .book { grid-template-columns: 40px 1fr; }
     .book-num { font-size: 26px; }
-    .book.has-cover .book-body { grid-template-columns: 80px 1fr; }
+    .book.has-cover .book-body { grid-template-columns: 130px 1fr; }
     .header-controls { align-items: flex-start; }
   }
 
