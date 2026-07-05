@@ -6,6 +6,10 @@
   "price": 349,
   "whatsapp": "",
   "cover": "covers/AP-01.jpg",
+  "excerptFile": {
+    "bn": "excerpts/AP-01-bn.txt",
+    "en": "excerpts/AP-01-en.txt"
+  },
   "dates": {
     "published": "01-07-2025",
     "started": "04-02-2020",
@@ -22,9 +26,9 @@
       "en": "I won't say much more about this story — what's already been said is more than enough. (Write the full detailed description here.)"
     },
     "excerpt": {
-     "bn": "বীববিবওহওহওহহুগিহিবিভিভিভিবিহ",
-     "en": "Paste the first part of the book here — enough for a reader to sample before buying"
-    }
+      "bn": "",
+      "en": ""
+    },
     "pages": 0,
     "chapters": 0,
     "sold": 1,
