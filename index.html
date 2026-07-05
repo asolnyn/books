@@ -234,6 +234,25 @@
     color: var(--accent);
   }
 
+  .filter-chips {
+    margin-top: 14px;
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+  .filter-chip {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    padding: 6px 14px;
+    border-radius: 20px;
+    border: 1px solid var(--line);
+    background: transparent;
+    color: var(--muted);
+    cursor: pointer;
+  }
+  body.lang-bn .filter-chip { font-family: var(--font-bn-body); }
+  .filter-chip.active { background: var(--accent); color: #fff; border-color: var(--accent); }
+
   .empty-state {
     padding: 40px 0;
     color: var(--muted);
@@ -431,10 +450,40 @@
     position: relative;
   }
 
+  .modal-topbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 14px;
+  }
+  .modal-topbar-right { display: flex; align-items: center; gap: 8px; }
+
+  .modal-back {
+    background: none;
+    border: 1px solid var(--line);
+    color: var(--ink);
+    font-family: var(--font-mono);
+    font-size: 12px;
+    padding: 7px 12px;
+    border-radius: 8px;
+    cursor: pointer;
+  }
+  body.lang-bn .modal-back { font-family: var(--font-bn-body); }
+
+  .modal-details-btn {
+    background: var(--accent-soft);
+    color: var(--accent);
+    border: none;
+    font-family: var(--font-mono);
+    font-size: 12px;
+    font-weight: 700;
+    padding: 7px 14px;
+    border-radius: 8px;
+    cursor: pointer;
+  }
+  body.lang-bn .modal-details-btn { font-family: var(--font-bn-body); }
+
   .modal-close {
-    position: absolute;
-    top: 16px;
-    right: 16px;
     background: var(--accent-soft);
     color: var(--accent);
     border: none;
@@ -443,6 +492,7 @@
     border-radius: 50%;
     font-size: 16px;
     cursor: pointer;
+    flex-shrink: 0;
   }
 
   .modal-cover {
@@ -477,11 +527,53 @@
   body.lang-bn .modal-stat { font-family: var(--font-bn-body); }
   .modal-stat b { display: block; color: var(--ink); font-size: 16px; font-weight: 700; }
 
+  .details-grid {
+    margin-top: 16px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 18px 20px;
+  }
+
   .modal-desc {
     margin-top: 20px;
     font-size: 15px;
     line-height: 1.75;
   }
+
+  .excerpt-text {
+    margin-top: 18px;
+    font-size: 15px;
+    line-height: 1.8;
+    white-space: pre-line;
+  }
+
+  .excerpt-endnote {
+    margin-top: 26px;
+    padding-top: 18px;
+    border-top: 1px solid var(--line);
+  }
+  .excerpt-endnote p {
+    font-size: 14px;
+    color: var(--muted);
+    margin: 0 0 14px;
+  }
+
+  .read-excerpt-btn {
+    margin-top: 20px;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: none;
+    border: 1px solid var(--accent);
+    color: var(--accent);
+    font-family: var(--font-mono);
+    font-size: 13px;
+    font-weight: 700;
+    padding: 9px 16px;
+    border-radius: 8px;
+    cursor: pointer;
+  }
+  body.lang-bn .read-excerpt-btn { font-family: var(--font-bn-body); }
 
   .modal-nav {
     margin-top: 26px;
@@ -567,7 +659,7 @@
       </div>
       <div class="theme-toggle" role="group" aria-label="Theme toggle">
         <button type="button" id="btn-dark">Dark</button>
-<button type="button" id="btn-light" class="active">Light</button>
+        <button type="button" id="btn-light" class="active">Light</button>
       </div>
     </div>
   </header>
@@ -589,6 +681,8 @@
     </select>
   </div>
 
+  <div class="filter-chips" id="filter-chips"></div>
+
   <div class="index-label" data-bn="লেখনসমূহ" data-en="Writings">লেখনসমূহ</div>
 
   <div id="book-list"></div>
@@ -605,13 +699,15 @@
 
 <div class="modal-overlay" id="modal-overlay">
   <div class="modal">
-    <button class="modal-close" id="modal-close">✕</button>
-    <div id="modal-cover-wrap"></div>
-    <div class="book-type" id="modal-type"></div>
-    <div class="modal-title" id="modal-title"></div>
-    <div class="modal-stats" id="modal-stats"></div>
-    <div class="modal-desc" id="modal-desc"></div>
-    <div class="modal-nav">
+    <div class="modal-topbar">
+      <button class="modal-back" id="modal-back" style="display:none;">← <span data-bn="ফিরে" data-en="Back">ফিরে</span></button>
+      <div class="modal-topbar-right">
+        <button class="modal-details-btn" id="modal-details-btn"><span data-bn="বিস্তারিত" data-en="Details">বিস্তারিত</span></button>
+        <button class="modal-close" id="modal-close">✕</button>
+      </div>
+    </div>
+    <div id="modal-body"></div>
+    <div class="modal-nav" id="modal-nav-row">
       <button class="nav-btn" id="modal-prev">← <span data-bn="আগের" data-en="Previous">আগের</span></button>
       <button class="nav-btn" id="modal-next"><span data-bn="পরের" data-en="Next">পরের</span> →</button>
     </div>
@@ -629,6 +725,9 @@
 
   const WHATSAPP_DEFAULT = "8809678736861";
 
+  // Used for the "আংশিক পড়ুন" (read excerpt) end note — link to message the author.
+  const TELEGRAM_AUTHOR_LINK = "https://t.me/nyn33user";
+
   const SOCIAL_LINKS = [
     { label: "Telegram", url: "https://t.me/nyn33user" },
     { label: "Facebook", url: "" },
@@ -643,7 +742,9 @@
   let lang = 'bn';
   let sortMode = 'order';
   let searchQuery = '';
+  let activeType = null;
   let modalIndex = null;
+  let modalScreen = 'preview';
   let visibleList = [];
 
   const bnDigits = ['০','১','২','৩','৪','৫','৬','৭','৮','৯'];
@@ -657,25 +758,86 @@
   }
 
   async function loadData() {
-    const [books, dates, descriptions, covers] = await Promise.all([
-      fetch('data/books.json').then(r => r.json()),
-      fetch('data/dates.json').then(r => r.json()),
-      fetch('data/descriptions.json').then(r => r.json()),
-      fetch('data/covers.json').then(r => r.json())
-    ]);
+    let manifest = [];
+    try {
+      manifest = await fetch('data/manifest.json').then(r => r.json());
+    } catch (e) {
+      console.error('Could not load data/manifest.json', e);
+    }
 
-    BOOKS = books.map(b => ({
-      ...b,
-      dates: dates[b.id] || {},
-      desc: descriptions[b.id] || { short: {bn:'',en:''}, full: {bn:'',en:''}, pages: 0, chapters: 0, sold: 0 },
-      cover: covers[b.id] || ""
-    }));
+    const results = await Promise.allSettled(
+      manifest.map(id =>
+        fetch(`data/books/${id}.json`).then(r => {
+          if (!r.ok) throw new Error(`data/books/${id}.json not found`);
+          return r.json();
+        })
+      )
+    );
 
+    BOOKS = [];
+    results.forEach((res, idx) => {
+      if (res.status === 'fulfilled') {
+        const b = res.value;
+        const d = b.description || {};
+        BOOKS.push({
+          id: b.id || manifest[idx],
+          order: b.order || 0,
+          title: b.title || { bn: '', en: '' },
+          type: b.type || { bn: '', en: '' },
+          price: b.price || 0,
+          whatsapp: b.whatsapp || '',
+          cover: b.cover || '',
+          dates: b.dates || {},
+          desc: {
+            short: d.short || { bn: '', en: '' },
+            full: d.full || { bn: '', en: '' },
+            excerpt: d.excerpt || { bn: '', en: '' },
+            pages: d.pages || 0,
+            chapters: d.chapters || 0,
+            sold: d.sold || 0,
+            continuous: !!d.continuous
+          }
+        });
+      } else {
+        // A mistake in one book's file only skips that book —
+        // it won't break the rest of the site. Check the browser
+        // console for which file failed and why.
+        console.error(`Skipped book "${manifest[idx]}":`, res.reason);
+      }
+    });
+
+    renderFilterChips();
     renderAll();
+  }
+
+  function renderFilterChips() {
+    const seen = new Map();
+    BOOKS.forEach(b => { if (!seen.has(b.type.bn)) seen.set(b.type.bn, b.type); });
+
+    const container = document.getElementById('filter-chips');
+    const allLabel = lang === 'bn' ? 'সব' : 'All';
+
+    let html = `<button class="filter-chip${activeType === null ? ' active' : ''}" data-type="">${allLabel}</button>`;
+    seen.forEach((typeObj, key) => {
+      html += `<button class="filter-chip${activeType === key ? ' active' : ''}" data-type="${key}">${typeObj[lang]}</button>`;
+    });
+    container.innerHTML = html;
+
+    container.querySelectorAll('.filter-chip').forEach(btn => {
+      btn.addEventListener('click', () => {
+        activeType = btn.dataset.type || null;
+        renderFilterChips();
+        renderList();
+      });
+    });
   }
 
   function getFiltered() {
     let list = [...BOOKS];
+
+    if (activeType) {
+      list = list.filter(b => b.type.bn === activeType);
+    }
 
     if (searchQuery.trim()) {
       const q = searchQuery.trim().toLowerCase();
@@ -788,6 +950,7 @@
 
   function openModal(id) {
     modalIndex = visibleList.findIndex(b => b.id === id);
+    modalScreen = 'preview';
     renderModal();
     document.getElementById('modal-overlay').classList.add('open');
   }
@@ -795,30 +958,82 @@
   function closeModal() {
     document.getElementById('modal-overlay').classList.remove('open');
     modalIndex = null;
+    modalScreen = 'preview';
   }
 
   function renderModal() {
     if (modalIndex === null || !visibleList[modalIndex]) return;
     const book = visibleList[modalIndex];
 
-    document.getElementById('modal-type').textContent = book.type[lang];
-    document.getElementById('modal-title').textContent = book.title[lang];
-    document.getElementById('modal-desc').textContent = book.desc.full[lang];
+    const backBtn = document.getElementById('modal-back');
+    const detailsBtn = document.getElementById('modal-details-btn');
+    const navRow = document.getElementById('modal-nav-row');
+    const body = document.getElementById('modal-body');
 
-    const coverWrap = document.getElementById('modal-cover-wrap');
-    coverWrap.innerHTML = book.cover
+    backBtn.style.display = modalScreen === 'preview' ? 'none' : 'inline-block';
+    detailsBtn.style.display = modalScreen === 'preview' ? 'inline-block' : 'none';
+    navRow.style.display = modalScreen === 'preview' ? 'flex' : 'none';
+
+    const coverHtml = book.cover
       ? `<div class="modal-cover"><img src="${book.cover}" alt="${book.title[lang]}"></div>`
       : '';
 
-    const stats = [];
-    if (book.desc.pages > 0) stats.push({ label: lang==='bn'?'পৃষ্ঠা':'Pages', value: lang==='bn'?toBnDigits(book.desc.pages):book.desc.pages });
-    if (book.desc.chapters > 0) stats.push({ label: lang==='bn'?'অধ্যায়':'Chapters', value: lang==='bn'?toBnDigits(book.desc.chapters):book.desc.chapters });
-    stats.push({ label: lang==='bn'?'বিক্রি হয়েছে':'Sold', value: lang==='bn'?toBnDigits(book.desc.sold):book.desc.sold });
-    if (book.dates.published) stats.push({ label: lang==='bn'?'প্রকাশ':'Published', value: fmtDate(book.dates.published) });
+    if (modalScreen === 'preview') {
+      const stats = [];
+      if (book.desc.pages > 0) stats.push({ label: lang==='bn'?'পৃষ্ঠা':'Pages', value: lang==='bn'?toBnDigits(book.desc.pages):book.desc.pages });
+      if (book.desc.chapters > 0) stats.push({ label: lang==='bn'?'অধ্যায়':'Chapters', value: lang==='bn'?toBnDigits(book.desc.chapters):book.desc.chapters });
+      stats.push({ label: lang==='bn'?'বিক্রি হয়েছে':'Sold', value: lang==='bn'?toBnDigits(book.desc.sold):book.desc.sold });
+      if (book.dates.published) stats.push({ label: lang==='bn'?'প্রকাশ':'Published', value: fmtDate(book.dates.published) });
 
-    document.getElementById('modal-stats').innerHTML = stats.map(s =>
-      `<div class="modal-stat">${s.label}<b>${s.value}</b></div>`
-    ).join('');
+      body.innerHTML = `
+        ${coverHtml}
+        <div class="book-type">${book.type[lang]}</div>
+        <div class="modal-title">${book.title[lang]}</div>
+        <div class="modal-stats">${stats.map(s => `<div class="modal-stat">${s.label}<b>${s.value}</b></div>`).join('')}</div>
+        <div class="modal-desc">${book.desc.full[lang]}</div>
+        <button class="read-excerpt-btn" data-action="excerpt">${lang==='bn'?'আংশিক পড়ুন':'Read excerpt'} →</button>
+      `;
+    } else if (modalScreen === 'details') {
+      const continuous = book.desc.continuous
+        ? (lang==='bn'?'হ্যাঁ, ধারাবাহিক':'Yes, ongoing series')
+        : (lang==='bn'?'না, সম্পূর্ণ বই':'No, complete book');
+
+      const grid = [
+        { label: lang==='bn'?'ধরন':'Type', value: book.type[lang] },
+        book.desc.pages > 0 ? { label: lang==='bn'?'পৃষ্ঠা':'Pages', value: lang==='bn'?toBnDigits(book.desc.pages):book.desc.pages } : null,
+        book.desc.chapters > 0 ? { label: lang==='bn'?'অধ্যায়':'Chapters', value: lang==='bn'?toBnDigits(book.desc.chapters):book.desc.chapters } : null,
+        book.price > 0 ? { label: lang==='bn'?'মূল্য':'Price', value: (lang==='bn'?toBnDigits(book.price)+' টাকা':book.price+' BDT') } : null,
+        { label: lang==='bn'?'ধারাবাহিকতা':'Continuity', value: continuous },
+        { label: lang==='bn'?'বিক্রি হয়েছে':'Sold copies', value: lang==='bn'?toBnDigits(book.desc.sold):book.desc.sold },
+        book.dates.published ? { label: lang==='bn'?'প্রকাশ':'Published', value: fmtDate(book.dates.published) } : null,
+        book.dates.started ? { label: lang==='bn'?'শুরু':'Started', value: fmtDate(book.dates.started) } : null,
+        book.dates.ended ? { label: lang==='bn'?'শেষ':'Ended', value: fmtDate(book.dates.ended) } : null,
+        book.dates.edited ? { label: lang==='bn'?'সম্পাদনা':'Edited', value: fmtDate(book.dates.edited) } : null,
+      ].filter(Boolean);
+
+      body.innerHTML = `
+        ${coverHtml}
+        <div class="book-type">${book.type[lang]}</div>
+        <div class="modal-title">${book.title[lang]}</div>
+        <div class="details-grid">${grid.map(s => `<div class="modal-stat">${s.label}<b>${s.value}</b></div>`).join('')}</div>
+        <div class="modal-desc">${book.desc.full[lang]}</div>
+        <button class="read-excerpt-btn" data-action="excerpt">${lang==='bn'?'আংশিক পড়ুন':'Read excerpt'} →</button>
+      `;
+    } else if (modalScreen === 'excerpt') {
+      const excerptText = (book.desc.excerpt && book.desc.excerpt[lang])
+        ? book.desc.excerpt[lang]
+        : (lang==='bn' ? 'এই বইয়ের অংশ শীঘ্রই যুক্ত হবে।' : 'An excerpt for this book will be added soon.');
+
+      body.innerHTML = `
+        <div class="book-type">${book.type[lang]}</div>
+        <div class="modal-title">${book.title[lang]}</div>
+        <div class="excerpt-text">${excerptText}</div>
+        <div class="excerpt-endnote">
+          <p>${lang==='bn' ? 'সম্পূর্ণ বইটি পড়তে লেখকের সাথে যোগাযোগ করুন।' : 'To read the full book, message the author directly.'}</p>
+          <a class="buy-btn" href="${TELEGRAM_AUTHOR_LINK}" target="_blank" rel="noopener">${lang==='bn' ? 'লেখকের সাথে যোগাযোগ' : 'Message the author'} →</a>
+        </div>
+      `;
+    }
 
     document.getElementById('modal-prev').disabled = modalIndex <= 0;
     document.getElementById('modal-next').disabled = modalIndex >= visibleList.length - 1;
@@ -828,13 +1043,19 @@
   document.getElementById('modal-overlay').addEventListener('click', e => {
     if (e.target.id === 'modal-overlay') closeModal();
   });
-  document.getElementById('modal-prev').addEventListener('click', () => { if (modalIndex > 0) { modalIndex--; renderModal(); } });
-  document.getElementById('modal-next').addEventListener('click', () => { if (modalIndex < visibleList.length - 1) { modalIndex++; renderModal(); } });
+  document.getElementById('modal-details-btn').addEventListener('click', () => { modalScreen = 'details'; renderModal(); });
+  document.getElementById('modal-back').addEventListener('click', () => { modalScreen = 'preview'; renderModal(); });
+  document.getElementById('modal-body').addEventListener('click', e => {
+    const trigger = e.target.closest('[data-action="excerpt"]');
+    if (trigger) { modalScreen = 'excerpt'; renderModal(); }
+  });
+  document.getElementById('modal-prev').addEventListener('click', () => { if (modalIndex > 0) { modalIndex--; modalScreen = 'preview'; renderModal(); } });
+  document.getElementById('modal-next').addEventListener('click', () => { if (modalIndex < visibleList.length - 1) { modalIndex++; modalScreen = 'preview'; renderModal(); } });
   document.addEventListener('keydown', e => {
     if (!document.getElementById('modal-overlay').classList.contains('open')) return;
     if (e.key === 'Escape') closeModal();
-    if (e.key === 'ArrowLeft' && modalIndex > 0) { modalIndex--; renderModal(); }
-    if (e.key === 'ArrowRight' && modalIndex < visibleList.length - 1) { modalIndex++; renderModal(); }
+    if (e.key === 'ArrowLeft' && modalIndex > 0) { modalIndex--; modalScreen = 'preview'; renderModal(); }
+    if (e.key === 'ArrowRight' && modalIndex < visibleList.length - 1) { modalIndex++; modalScreen = 'preview'; renderModal(); }
   });
 
   function renderSocial() {
@@ -856,6 +1077,7 @@
     document.getElementById('contact-phone').textContent = phonesText;
     document.getElementById('footer-contact').textContent = phonesText;
 
+    renderFilterChips();
     renderList();
     if (modalIndex !== null) renderModal();
   }
