@@ -10,26 +10,6 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Space+Grotesk:wght@400;500;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&family=Baloo+Da+2:wght@500;600;700;800&family=Hind+Siliguri:wght@400;500;600;700&display=swap" rel="stylesheet">
 
-<!--
-  ============================================================
-  HOW TO EDIT THIS SITE — read this first
-  ============================================================
-  Nothing in this file needs editing for day-to-day updates.
-  Everything lives in separate files:
-
-    data/manifest.json      -> list of which books exist
-    data/books/AP-01.json    -> one file per book (title, dates,
-                                 price, description, etc.)
-    data/contact.json        -> phone numbers, emails, social links,
-                                 WhatsApp number, Telegram link
-    covers/                  -> cover images
-    excerpts/                -> long excerpt text files (optional)
-    fonts/                   -> custom font files
-
-  Full instructions are in data/README.md — open that file first.
-  ============================================================
--->
-
 <style>
   @font-face {
   font-family: 'Jashir Abhyuday';
@@ -387,6 +367,7 @@
   .buy-btn {
     display: inline-flex;
     align-items: center;
+    justify-content: center;
     gap: 8px;
     text-decoration: none;
     background: var(--accent);
@@ -398,6 +379,8 @@
     text-transform: uppercase;
     padding: 10px 18px;
     border-radius: 6px;
+    height: 38px;
+    line-height: 1;
     transition: transform .12s ease, filter .15s ease;
   }
   body.lang-bn .buy-btn { font-family: var(--font-bn-body); letter-spacing: 0; text-transform: none; }
@@ -1055,8 +1038,8 @@
         <div class="modal-cover-row">
           ${coverHtml}
           <div class="modal-side-col">
-            <button class="modal-details-btn" data-action="details">${lang==='bn'?'বিস্তারিত':'Details'}</button>
             ${priceStatHtml}
+            <button class="modal-details-btn" data-action="details">${lang==='bn'?'বিস্তারিত —⟩':'Details —⟩'}</button>
           </div>
         </div>
         <div class="book-type">${book.type[lang]}</div>
