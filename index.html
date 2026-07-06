@@ -528,11 +528,6 @@
     align-items: center;
   }
 
-  /* Cancel the standalone read-excerpt-btn top margin when it sits
-     inline in the actions row next to the buy button, so it lines
-     up with কিনুন / Buy now instead of sitting lower. */
-  .modal-actions-row .read-excerpt-btn { margin-top: 0; }
-
   .modal-cover {
     width: 150px;
     aspect-ratio: 3/4;
@@ -597,7 +592,6 @@
   }
 
   .read-excerpt-btn {
-    margin-top: 20px;
     display: inline-flex;
     align-items: center;
     gap: 6px;
@@ -1061,8 +1055,8 @@
         <div class="modal-cover-row">
           ${coverHtml}
           <div class="modal-side-col">
+            <button class="modal-details-btn" data-action="details">${lang==='bn'?'বিস্তারিত':'Details'}</button>
             ${priceStatHtml}
-            <button class="modal-details-btn" data-action="details">${lang==='bn'?'বিস্তারিত →':'Details →'}</button>
           </div>
         </div>
         <div class="book-type">${book.type[lang]}</div>
