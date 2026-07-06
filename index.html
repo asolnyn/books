@@ -1031,6 +1031,7 @@
 
     backBtn.style.display = modalScreen === 'preview' ? 'none' : 'inline-block';
     navRow.style.display = modalScreen === 'preview' ? 'flex' : 'none';
+    body.style.marginTop = modalScreen === 'preview' ? '0' : '38px';
 
     const coverHtml = book.cover
       ? `<div class="modal-cover"><img src="${book.cover}" alt="${book.title[lang]}"></div>`
