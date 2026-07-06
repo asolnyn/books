@@ -14,18 +14,19 @@
   ============================================================
   HOW TO EDIT THIS SITE — read this first
   ============================================================
-  Your book info now lives in separate files inside the "data" folder:
-    data/books.json         -> title, type/genre, price, WhatsApp number
-    data/dates.json         -> published / started / ended / edited
-    data/descriptions.json  -> short blurb, full description, pages,
-                                chapters, sold copies
-    data/covers.json        -> cover image paths
-  Full instructions are in data/README.md — open that file first.
+  Nothing in this file needs editing for day-to-day updates.
+  Everything lives in separate files:
 
-  Things you can edit directly in THIS file:
-    - CONTACT_PHONES     (search below)
-    - WHATSAPP_DEFAULT   (fallback WhatsApp number for Buy buttons)
-    - SOCIAL_LINKS        (footer social media links)
+    data/manifest.json      -> list of which books exist
+    data/books/AP-01.json    -> one file per book (title, dates,
+                                 price, description, etc.)
+    data/contact.json        -> phone numbers, emails, social links,
+                                 WhatsApp number, Telegram link
+    covers/                  -> cover images
+    excerpts/                -> long excerpt text files (optional)
+    fonts/                   -> custom font files
+
+  Full instructions are in data/README.md — open that file first.
   ============================================================
 -->
 
@@ -100,7 +101,7 @@
     letter-spacing: 0.5px;
     text-transform: lowercase;
   }
-  body.lang-en .brand-name { font-family: var(--font-en-display); font-weight: 400; letter-spacing: 0; }
+  body.lang-en .brand-name { font-family: var(--font-en-sub); font-weight: 700; letter-spacing: 0; }
 
   .brand-sub {
     margin-top: 8px;
@@ -117,6 +118,8 @@
   body.lang-bn .index-label,
   body.lang-bn .sort-select,
   body.lang-bn .book-code,
+  body.lang-bn .contact-bar,
+  body.lang-bn #btn-bn,
   body.lang-bn option {
     font-family: var(--font-bn-body);
     letter-spacing: 0;
@@ -450,15 +453,10 @@
     position: relative;
   }
 
-  .modal-topbar {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 14px;
-  }
-  .modal-topbar-right { display: flex; align-items: center; gap: 8px; }
-
   .modal-back {
+    position: absolute;
+    top: 16px;
+    left: 16px;
     background: none;
     border: 1px solid var(--line);
     color: var(--ink);
@@ -467,6 +465,7 @@
     padding: 7px 12px;
     border-radius: 8px;
     cursor: pointer;
+    z-index: 2;
   }
   body.lang-bn .modal-back { font-family: var(--font-bn-body); }
 
@@ -483,7 +482,32 @@
   }
   body.lang-bn .modal-details-btn { font-family: var(--font-bn-body); }
 
+  .modal-cover-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+    margin-top: 4px;
+    margin-bottom: 8px;
+  }
+  .modal-side-col {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 14px;
+    padding-top: 4px;
+  }
+  .modal-price-stat {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--accent);
+  }
+  body.lang-bn .modal-price-stat { font-family: var(--font-bn-body); }
+  .modal-price-stat b { display: block; color: var(--ink); font-size: 16px; font-weight: 700; margin-top: 2px; }
+
   .modal-close {
+    position: absolute;
+    top: 16px;
+    right: 16px;
     background: var(--accent-soft);
     color: var(--accent);
     border: none;
@@ -493,6 +517,15 @@
     font-size: 16px;
     cursor: pointer;
     flex-shrink: 0;
+    z-index: 2;
+  }
+
+  .modal-actions-row {
+    margin-top: 20px;
+    display: flex;
+    gap: 14px;
+    flex-wrap: wrap;
+    align-items: center;
   }
 
   .modal-cover {
@@ -669,6 +702,11 @@
     <strong id="contact-phone"></strong>
   </div>
 
+  <div class="contact-bar" id="contact-email-row" style="display:none;">
+    <span data-bn="ইমেইল:" data-en="Email:">ইমেইল:</span>
+    <strong id="contact-email"></strong>
+  </div>
+
   <div class="toolbar">
     <div class="search-box">
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
@@ -699,13 +737,8 @@
 
 <div class="modal-overlay" id="modal-overlay">
   <div class="modal">
-    <div class="modal-topbar">
-      <button class="modal-back" id="modal-back" style="display:none;">← <span data-bn="ফিরে" data-en="Back">ফিরে</span></button>
-      <div class="modal-topbar-right">
-        <button class="modal-details-btn" id="modal-details-btn"><span data-bn="বিস্তারিত" data-en="Details">বিস্তারিত</span></button>
-        <button class="modal-close" id="modal-close">✕</button>
-      </div>
-    </div>
+    <button class="modal-back" id="modal-back" style="display:none;">← <span data-bn="ফিরে" data-en="Back">ফিরে</span></button>
+    <button class="modal-close" id="modal-close">✕</button>
     <div id="modal-body"></div>
     <div class="modal-nav" id="modal-nav-row">
       <button class="nav-btn" id="modal-prev">← <span data-bn="আগের" data-en="Previous">আগের</span></button>
@@ -716,23 +749,22 @@
 
 <script>
   // ============================================================
-  // EDIT THESE
+  // Contact info, phone numbers, and social links now live in
+  // data/contact.json — nothing to edit in this file for those.
   // ============================================================
 
-  const CONTACT_PHONES = [
-    "+88096 7873 6861"
-  ];
+  let CONTACT = { phones: [], emails: [], whatsappDefault: '', telegramAuthorLink: '', socialLinks: [] };
 
-  const WHATSAPP_DEFAULT = "8809678736861";
-
-  // Used for the "আংশিক পড়ুন" (read excerpt) end note — link to message the author.
-  const TELEGRAM_AUTHOR_LINK = "https://t.me/nyn33user";
-
-  const SOCIAL_LINKS = [
-    { label: "Telegram", url: "https://t.me/nyn33user" },
-    { label: "Facebook", url: "" },
-    { label: "YouTube", url: "" }
-  ];
+  async function loadContact() {
+    try {
+      CONTACT = await fetch('data/contact.json').then(r => {
+        if (!r.ok) throw new Error('data/contact.json not found');
+        return r.json();
+      });
+    } catch (e) {
+      console.error('Could not load data/contact.json', e);
+    }
+  }
 
   // ============================================================
   // App logic — no need to edit below this line
@@ -898,7 +930,7 @@
   }
 
   function buildWhatsappLink(book) {
-    const number = (book.whatsapp && book.whatsapp.trim()) || WHATSAPP_DEFAULT;
+    const number = (book.whatsapp && book.whatsapp.trim()) || CONTACT.whatsappDefault;
     const msg = encodeURIComponent(
       (lang === 'bn' ? 'আমি "' : 'I want to order "') + book.title[lang] + (lang === 'bn' ? '" বইটি কিনতে চাই।' : '".')
     );
@@ -994,12 +1026,10 @@
     const book = visibleList[modalIndex];
 
     const backBtn = document.getElementById('modal-back');
-    const detailsBtn = document.getElementById('modal-details-btn');
     const navRow = document.getElementById('modal-nav-row');
     const body = document.getElementById('modal-body');
 
     backBtn.style.display = modalScreen === 'preview' ? 'none' : 'inline-block';
-    detailsBtn.style.display = modalScreen === 'preview' ? 'inline-block' : 'none';
     navRow.style.display = modalScreen === 'preview' ? 'flex' : 'none';
 
     const coverHtml = book.cover
@@ -1013,13 +1043,30 @@
       stats.push({ label: lang==='bn'?'বিক্রি হয়েছে':'Sold', value: lang==='bn'?toBnDigits(book.desc.sold):book.desc.sold });
       if (book.dates.published) stats.push({ label: lang==='bn'?'প্রকাশ':'Published', value: fmtDate(book.dates.published) });
 
+      const priceStatHtml = book.price > 0
+        ? `<div class="modal-price-stat">${lang==='bn'?'মূল্য':'Price'}<b>${lang==='bn'?toBnDigits(book.price)+' টাকা':book.price+' BDT'}</b></div>`
+        : '';
+
+      const buyBtnHtml = book.price > 0
+        ? `<a class="buy-btn" href="${buildWhatsappLink(book)}" target="_blank" rel="noopener">${lang==='bn'?'কিনুন':'Buy now'} →</a>`
+        : `<span class="status-pill">${lang==='bn'?'শীঘ্রই আসছে':'Coming soon'}</span>`;
+
       body.innerHTML = `
-        ${coverHtml}
+        <div class="modal-cover-row">
+          ${coverHtml}
+          <div class="modal-side-col">
+            <button class="modal-details-btn" data-action="details">${lang==='bn'?'বিস্তারিত':'Details'}</button>
+            ${priceStatHtml}
+          </div>
+        </div>
         <div class="book-type">${book.type[lang]}</div>
         <div class="modal-title">${book.title[lang]}</div>
         <div class="modal-stats">${stats.map(s => `<div class="modal-stat">${s.label}<b>${s.value}</b></div>`).join('')}</div>
         <div class="modal-desc">${book.desc.full[lang]}</div>
-        <button class="read-excerpt-btn" data-action="excerpt">${lang==='bn'?'আংশিক পড়ুন':'Read excerpt'} →</button>
+        <div class="modal-actions-row">
+          <button class="read-excerpt-btn" data-action="excerpt">${lang==='bn'?'আংশিক পড়ুন':'Read excerpt'} →</button>
+          ${buyBtnHtml}
+        </div>
       `;
     } else if (modalScreen === 'details') {
       const continuous = book.desc.continuous
@@ -1058,7 +1105,7 @@
         <div class="excerpt-text">${excerptText}</div>
         <div class="excerpt-endnote">
           <p>${lang==='bn' ? 'সম্পূর্ণ বইটি পড়তে লেখকের সাথে যোগাযোগ করুন।' : 'To read the full book, message the author directly.'}</p>
-          <a class="buy-btn" href="${TELEGRAM_AUTHOR_LINK}" target="_blank" rel="noopener">${lang==='bn' ? 'লেখকের সাথে যোগাযোগ' : 'Message the author'} →</a>
+          <a class="buy-btn" href="${CONTACT.telegramAuthorLink}" target="_blank" rel="noopener">${lang==='bn' ? 'লেখকের সাথে যোগাযোগ' : 'Message the author'} →</a>
         </div>
       `;
     }
@@ -1071,11 +1118,10 @@
   document.getElementById('modal-overlay').addEventListener('click', e => {
     if (e.target.id === 'modal-overlay') closeModal();
   });
-  document.getElementById('modal-details-btn').addEventListener('click', () => { modalScreen = 'details'; renderModal(); });
   document.getElementById('modal-back').addEventListener('click', () => { modalScreen = 'preview'; renderModal(); });
   document.getElementById('modal-body').addEventListener('click', e => {
-    const trigger = e.target.closest('[data-action="excerpt"]');
-    if (trigger) { modalScreen = 'excerpt'; renderModal(); }
+    if (e.target.closest('[data-action="details"]')) { modalScreen = 'details'; renderModal(); return; }
+    if (e.target.closest('[data-action="excerpt"]')) { modalScreen = 'excerpt'; renderModal(); }
   });
   document.getElementById('modal-prev').addEventListener('click', () => { if (modalIndex > 0) { modalIndex--; modalScreen = 'preview'; renderModal(); } });
   document.getElementById('modal-next').addEventListener('click', () => { if (modalIndex < visibleList.length - 1) { modalIndex++; modalScreen = 'preview'; renderModal(); } });
@@ -1088,7 +1134,7 @@
 
   function renderSocial() {
     const row = document.getElementById('social-row');
-    row.innerHTML = SOCIAL_LINKS.filter(s => s.url).map(s =>
+    row.innerHTML = (CONTACT.socialLinks || []).filter(s => s.url).map(s =>
       `<a href="${s.url}" target="_blank" rel="noopener">${s.label}</a>`
     ).join('');
   }
@@ -1101,9 +1147,17 @@
     const searchInput = document.getElementById('search-input');
     searchInput.placeholder = searchInput.dataset[lang + 'Ph'];
 
-    const phonesText = CONTACT_PHONES.join('  ·  ');
+    const phonesText = (CONTACT.phones || []).join('  ·  ');
     document.getElementById('contact-phone').textContent = phonesText;
     document.getElementById('footer-contact').textContent = phonesText;
+
+    const emailRow = document.getElementById('contact-email-row');
+    if (CONTACT.emails && CONTACT.emails.length) {
+      emailRow.style.display = 'flex';
+      document.getElementById('contact-email').textContent = CONTACT.emails.join('  ·  ');
+    } else {
+      emailRow.style.display = 'none';
+    }
 
     renderFilterChips();
     renderList();
@@ -1148,8 +1202,12 @@
     renderList();
   });
 
-  renderSocial();
-  loadData();
+  async function init() {
+    await loadContact();
+    renderSocial();
+    await loadData();
+  }
+  init();
 </script>
 </body>
 </html>
