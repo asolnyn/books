@@ -1,4 +1,4 @@
-# How the data files work 
+# How the data files work
 
 Every book now has its own file, so editing one book can never break
 another — if you make a mistake in one book's file, the website just
