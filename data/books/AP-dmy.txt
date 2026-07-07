@@ -1,11 +1,11 @@
 {
-  "id": "AP-02",
+  "id": "AP-dmy",
   "order": 2,
-  "title": { "bn": "ঈশান ও ইতু", "en": "Ishaan o Itu" },
+  "title": { "bn": "dummy", "en": "dummy" },
   "type": { "bn": "গল্প", "en": "Story" },
   "price": 100,
   "whatsapp": "",
-  "cover": "covers/AP-02.jpg",
+  "cover": "covers/AP-dmy.jpg",
   "dates": {
     "published": "",
     "started": "",
