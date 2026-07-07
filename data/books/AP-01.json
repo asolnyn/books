@@ -3,8 +3,10 @@
   "order": 1,
   "title": { "bn": "বছর দুই হাজার আঠারো", "en": "Bochor Dui Hajar Atharo" },
   "type": { "bn": "গল্প", "en": "Story" },
-  "price": 2018,
+  "price": 349,
   "whatsapp": "",
+  "free": false,
+  "driveLink": "",
   "cover": "covers/AP-01.jpg",
   "excerptFile": {
     "bn": "excerpts/AP-01-bn.txt",
