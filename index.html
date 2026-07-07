@@ -786,8 +786,6 @@
           return r.json();
         });
 
-        // Optional: excerpt text loaded from a separate .txt file instead
-        // of being written inline in the JSON — better for long text.
         if (book.excerptFile) {
           book._excerptText = {};
           for (const l of ['bn', 'en']) {
@@ -829,6 +827,8 @@
           price: b.price || 0,
           whatsapp: b.whatsapp || '',
           cover: b.cover || '',
+          free: !!b.free,
+          driveLink: b.driveLink || '',
           dates: b.dates || {},
           desc: {
             short: d.short || { bn: '', en: '' },
@@ -841,9 +841,6 @@
           }
         });
       } else {
-        // A mistake in one book's file only skips that book —
-        // it won't break the rest of the site. Check the browser
-        // console for which file failed and why.
         console.error(`Skipped book "${manifest[idx]}":`, res.reason);
       }
     });
@@ -950,13 +947,17 @@
         ? `<div class="cover" data-open="${book.id}"><img src="${book.cover}" alt="${book.title[lang]}"></div>`
         : `<div class="cover placeholder">${lang === 'bn' ? 'কভার শীঘ্রই' : 'Cover coming soon'}</div>`;
 
-      const priceHtml = book.price > 0
-        ? `<div class="price">${lang === 'bn' ? toBnDigits(book.price) : book.price}<span class="unit">${lang === 'bn' ? ' টাকা' : ' BDT'}</span></div>`
-        : '';
+      const priceHtml = book.free
+        ? `<div class="price">${lang === 'bn' ? 'ফ্রি' : 'Free'}</div>`
+        : (book.price > 0
+          ? `<div class="price">${lang === 'bn' ? toBnDigits(book.price) : book.price}<span class="unit">${lang === 'bn' ? ' টাকা' : ' BDT'}</span></div>`
+          : '');
 
-      const actionHtml = book.price > 0
-        ? `<a class="buy-btn" href="${buildWhatsappLink(book)}" target="_blank" rel="noopener">${lang === 'bn' ? 'কিনুন' : 'Buy now'} →</a>`
-        : `<span class="status-pill">${lang === 'bn' ? 'শীঘ্রই আসছে' : 'Coming soon'}</span>`;
+      const actionHtml = book.free
+        ? `<a class="buy-btn" href="${book.driveLink}" target="_blank" rel="noopener">${lang === 'bn' ? 'ফ্রি' : 'Free'} →</a>`
+        : (book.price > 0
+          ? `<a class="buy-btn" href="${buildWhatsappLink(book)}" target="_blank" rel="noopener">${lang === 'bn' ? 'কিনুন' : 'Buy now'} →</a>`
+          : `<span class="status-pill">${lang === 'bn' ? 'শীঘ্রই আসছে' : 'Coming soon'}</span>`);
 
       const el = document.createElement('div');
       el.className = 'book' + (hasCover ? ' has-cover' : '');
@@ -1021,24 +1022,32 @@
 
     if (modalScreen === 'preview') {
       const stats = [];
-      if (book.desc.pages > 0) stats.push({ label: lang==='bn'?'পৃষ্ঠা':'Pages', value: lang==='bn'?toBnDigits(book.desc.pages):book.desc.pages });
       if (book.desc.chapters > 0) stats.push({ label: lang==='bn'?'অধ্যায়':'Chapters', value: lang==='bn'?toBnDigits(book.desc.chapters):book.desc.chapters });
       stats.push({ label: lang==='bn'?'বিক্রি হয়েছে':'Sold', value: lang==='bn'?toBnDigits(book.desc.sold):book.desc.sold });
       if (book.dates.published) stats.push({ label: lang==='bn'?'প্রকাশ':'Published', value: fmtDate(book.dates.published) });
 
-      const priceStatHtml = book.price > 0
-        ? `<div class="modal-price-stat">${lang==='bn'?'মূল্য':'Price'}<b>${lang==='bn'?toBnDigits(book.price)+' টাকা':book.price+' BDT'}</b></div>`
+      const priceStatHtml = book.free
+        ? `<div class="modal-price-stat">${lang==='bn'?'মূল্য':'Price'}<b>${lang==='bn'?'ফ্রি':'Free'}</b></div>`
+        : (book.price > 0
+          ? `<div class="modal-price-stat">${lang==='bn'?'মূল্য':'Price'}<b>${lang==='bn'?toBnDigits(book.price)+' টাকা':book.price+' BDT'}</b></div>`
+          : '');
+
+      const pageStatHtml = book.desc.pages > 0
+        ? `<div class="modal-price-stat">${lang==='bn'?'পৃষ্ঠা':'Pages'}<b>${lang==='bn'?toBnDigits(book.desc.pages)+' টি':book.desc.pages}</b></div>`
         : '';
 
-      const buyBtnHtml = book.price > 0
-        ? `<a class="buy-btn" href="${buildWhatsappLink(book)}" target="_blank" rel="noopener">${lang==='bn'?'কিনুন':'Buy now'} →</a>`
-        : `<span class="status-pill">${lang==='bn'?'শীঘ্রই আসছে':'Coming soon'}</span>`;
+      const buyBtnHtml = book.free
+        ? `<a class="buy-btn" href="${book.driveLink}" target="_blank" rel="noopener">${lang==='bn'?'ফ্রি':'Free'} →</a>`
+        : (book.price > 0
+          ? `<a class="buy-btn" href="${buildWhatsappLink(book)}" target="_blank" rel="noopener">${lang==='bn'?'কিনুন':'Buy now'} →</a>`
+          : `<span class="status-pill">${lang==='bn'?'শীঘ্রই আসছে':'Coming soon'}</span>`);
 
       body.innerHTML = `
         <div class="modal-cover-row">
           ${coverHtml}
           <div class="modal-side-col">
             ${priceStatHtml}
+            ${pageStatHtml}
             <button class="modal-details-btn" data-action="details">${lang==='bn'?'বিস্তারিত —⟩':'Details —⟩'}</button>
           </div>
         </div>
@@ -1056,11 +1065,15 @@
         ? (lang==='bn'?'হ্যাঁ, ধারাবাহিক':'Yes, ongoing series')
         : (lang==='bn'?'না, সম্পূর্ণ বই':'No, complete book');
 
+      const priceValue = book.free
+        ? (lang==='bn'?'ফ্রি':'Free')
+        : (book.price > 0 ? (lang==='bn'?toBnDigits(book.price)+' টাকা':book.price+' BDT') : null);
+
       const grid = [
         { label: lang==='bn'?'ধরন':'Type', value: book.type[lang] },
-        book.desc.pages > 0 ? { label: lang==='bn'?'পৃষ্ঠা':'Pages', value: lang==='bn'?toBnDigits(book.desc.pages):book.desc.pages } : null,
+        book.desc.pages > 0 ? { label: lang==='bn'?'পৃষ্ঠা':'Pages', value: lang==='bn'?toBnDigits(book.desc.pages)+' টি':book.desc.pages } : null,
         book.desc.chapters > 0 ? { label: lang==='bn'?'অধ্যায়':'Chapters', value: lang==='bn'?toBnDigits(book.desc.chapters):book.desc.chapters } : null,
-        book.price > 0 ? { label: lang==='bn'?'মূল্য':'Price', value: (lang==='bn'?toBnDigits(book.price)+' টাকা':book.price+' BDT') } : null,
+        priceValue !== null ? { label: lang==='bn'?'মূল্য':'Price', value: priceValue } : null,
         { label: lang==='bn'?'ধারাবাহিকতা':'Continuity', value: continuous },
         { label: lang==='bn'?'বিক্রি হয়েছে':'Sold copies', value: lang==='bn'?toBnDigits(book.desc.sold):book.desc.sold },
         book.dates.published ? { label: lang==='bn'?'প্রকাশ':'Published', value: fmtDate(book.dates.published) } : null,
@@ -1082,14 +1095,20 @@
         ? book.desc.excerpt[lang]
         : (lang==='bn' ? 'এই বইয়ের অংশ শীঘ্রই যুক্ত হবে।' : 'An excerpt for this book will be added soon.');
 
+      const endnoteHtml = (book.free && book.driveLink)
+        ? `<div class="excerpt-endnote">
+             <a class="buy-btn" href="${book.driveLink}" target="_blank" rel="noopener">${lang==='bn' ? 'সম্পূর্ণ পড়ুন' : 'Read full book'} —⟩</a>
+           </div>`
+        : `<div class="excerpt-endnote">
+             <p>${lang==='bn' ? 'সম্পূর্ণ বইটি পড়তে লেখকের সাথে যোগাযোগ করুন।' : 'To read the full book, message the author directly.'}</p>
+             <a class="buy-btn" href="${CONTACT.telegramAuthorLink}" target="_blank" rel="noopener">${lang==='bn' ? 'লেখকের সাথে যোগাযোগ' : 'Message the author'} →</a>
+           </div>`;
+
       body.innerHTML = `
         <div class="book-type">${book.type[lang]}</div>
         <div class="modal-title">${book.title[lang]}</div>
         <div class="excerpt-text">${excerptText}</div>
-        <div class="excerpt-endnote">
-          <p>${lang==='bn' ? 'সম্পূর্ণ বইটি পড়তে লেখকের সাথে যোগাযোগ করুন।' : 'To read the full book, message the author directly.'}</p>
-          <a class="buy-btn" href="${CONTACT.telegramAuthorLink}" target="_blank" rel="noopener">${lang==='bn' ? 'লেখকের সাথে যোগাযোগ' : 'Message the author'} →</a>
-        </div>
+        ${endnoteHtml}
       `;
     }
 
