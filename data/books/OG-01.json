@@ -1,39 +1,39 @@
 {
   "id": "OG-01",
   "order": 1,
-  "title": { "bn": "dummy", "en": "Bochor Dui Hajar Atharo" },
-  "type": { "bn": "গল্প", "en": "Story" },
-  "price": 349,
+  "title": { "bn": "সুভাষিণী", "en": "Suvashini" },
+  "type": { "bn": "ছোটগল্প", "en": "Story" },
+  "price": 0,
   "whatsapp": "",
   "free": true,
-  "driveLink": "https://api.smsq.global/api/v2/SendSMS",
-  "cover": "covers/AP-01.jpg",
+  "driveLink": "https://t.me/golperchannel/3",
+  "cover": "covers/OG-01.jpg",
   "excerptFile": {
-    "bn": "excerpts/AP-01-bn.txt",
-    "en": "excerpts/AP-01-en.txt"
+    "bn": "excerpts/OG-01-bn.txt",
+    "en": "excerpts/OG-01-en.txt"
   },
   "dates": {
-    "published": "01-07-2025",
-    "started": "04-02-2020",
-    "ended": "22-06-2024",
-    "edited": "27-06-2025"
+    "published": "23-04-2026",
+    "started": "",
+    "ended": "",
+    "edited": "22-04-2026"
   },
   "description": {
     "short": {
-      "bn": "এ গল্পো সম্পর্কে আর কিছু না বলি। যা বলেছি তাই অনেক বেশি।",
-      "en": "I won't say much more about this story — what's already been said is more than enough."
+      "bn": "এটি রবীন্দ্রনাথ ঠাকুরের সুভা গল্পের চলিত/প্রমিত রূপের গল্প।",
+      "en": "This is the colloquial/standard Bengali version of the story Subha by Rabindranath Tagore."
     },
     "full": {
-      "bn": "এ গল্পো সম্পর্কে আর কিছু না বলি। যা বলেছি তাই অনেক বেশি। (এখানে বইয়ের বিস্তারিত বর্ণনা লিখুন)",
-      "en": "I won't say much more about this story — what's already been said is more than enough. (Write the full detailed description here.)"
+      "bn": "এটি রবীন্দ্রনাথ ঠাকুরের সুভা গল্পের চলিত/প্রমিত রূপের গল্প। অবশ্যই পর দেখবেন। ধন্যবাদ!",
+      "en": "This is the colloquial/standard Bengali version of Subha by Rabindranath Tagore. Please be sure to read it. Thank you!"
     },
     "excerpt": {
       "bn": "",
       "en": ""
     },
-    "pages": 0,
-    "chapters": 0,
-    "sold": 1,
+    "pages": 7,
+    "chapters": 1,
+    "sold": ,
     "continuous": false
   }
 }
