@@ -3,8 +3,8 @@
   "order": 1,
   "title": { "bn": "বছর দুই হাজার আঠারো", "en": "Bochor Dui Hajar Atharo" },
   "type": { "bn": "গল্প", "en": "Story" },
-  "price": 349,
-  "whatsapp": "",
+  "price": 96.96,
+  "whatsapp": "t.me/asolnyn",
   "free": false,
   "driveLink": "",
   "cover": "covers/AP-01.jpg",
@@ -20,19 +20,19 @@
   },
   "description": {
     "short": {
-      "bn": "এ গল্পো সম্পর্কে আর কিছু না বলি। যা বলেছি তাই অনেক বেশি।",
-      "en": "I won't say much more about this story — what's already been said is more than enough."
+      "bn": "সালটা ছিল ২০১৮। সেই সময়ের স্মৃতিগুলো আজও অনেকের মনে...",
+      "en": "It was 2018. Those who were part of that story are the on..."
     },
     "full": {
-      "bn": "এ গল্পো সম্পর্কে আর কিছু না বলি। যা বলেছি তাই অনেক বেশি। (এখানে বইয়ের বিস্তারিত বর্ণনা লিখুন)",
-      "en": "I won't say much more about this story — what's already been said is more than enough. (Write the full detailed description here.)"
+      "bn": "সালটা ছিল ২০১৮। সেই সময়ের স্মৃতিগুলো আজও অনেকের মনে অমলিন। এই অনুভূতিটা সত্যিকার অর্থে শুধু তারাই উপলব্ধি করতে পারবে, যারা সেই গল্পের অংশ ছিল। এতটুকুই বলার ছিল।",
+      "en": "It was 2018. Those who were part of that story are the only ones who will truly relate. That's all I wanted to say."
     },
     "excerpt": {
       "bn": "",
       "en": ""
     },
-    "pages": 27,
-    "chapters": 2,
+    "pages": 25,
+    "chapters": 1,
     "sold": 1,
     "continuous": false
   }
