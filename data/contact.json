@@ -2,11 +2,11 @@
   "phones": [
     "+88096 7873 6861"
   ],
-  "emails": [],
-  "whatsappDefault": "8809678736861",
-  "telegramAuthorLink": "https://t.me/nyn33user",
+  "emails": [asolprokashoni@proton.me],
+  "whatsappDefault": "asolnyn",
+  "telegramAuthorLink": "https://t.me/asolnyn",
   "socialLinks": [
-    { "label": "Telegram", "url": "https://t.me/nyn33user" },
+    { "label": "Telegram", "url": "https://t.me/asolnyn" },
     { "label": "Facebook", "url": "" },
     { "label": "YouTube", "url": "" }
   ]
